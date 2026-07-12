@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>mewnator</title>
+  </head>
+  <body>
+    <video id="video" autoplay playsinline class="-scale-1"></video>
+    <canvas id="canvas"></canvas>
+
+    <script type="module">
+      const { FaceLandmarker, FilesetResolver, DrawingUtils } =
+        await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35");
+      // this guy said to use it? https://dev.to/calvin773/how-i-got-mediapipe-face-landmarker-running-in-the-browser-with-zero-build-tools-and-the-import-36b1
+
+      const filesetResolver = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm",
+      );
+
+      const video = document.getElementById("video");
+
+      const stream = await navigator.mediaDevices.getUserMedia({video: true});
+
+      video.srcObject = stream
+
+    </script>
+  </body>
+</html>
+ 
