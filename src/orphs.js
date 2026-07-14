@@ -32,8 +32,7 @@ function isColliding(boxA, boxB) {
 export function updateOrphs(deltaTime, canvasWidth, onChomp) {
   if (!imageLoaded) return;
 
-
-  const speed = 0.3; // pixels per ms
+  let speed = 0.3; // pixels per ms
 
   timeSinceLastSpawn += deltaTime;
   if (timeSinceLastSpawn > spawnInterval) {
