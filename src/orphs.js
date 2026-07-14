@@ -1,4 +1,5 @@
 import { guideBox, player } from "./player.js";
+import { snapShots } from "./snapshots.js";
 
 export let orphs = [];
 export let evilOrphs = [];
@@ -15,6 +16,13 @@ evilOrphImage.src = "public/assets/evil-dino.png"
 orphImage.onload = () => {
   imageLoaded = true;
 };
+
+export function restartOrphs() {
+    orphs = [];
+    evilOrphs = [];
+    spawnInterval = 1000;
+    timeSinceLastSpawn = 0;
+}
 
 function isColliding(boxA, boxB) {
   //boxA on the left
@@ -88,8 +96,10 @@ function spawnOrph(canvasWidth) {
 export function drawOrphs(ctx) {
   for (const orph of orphs) {
     ctx.drawImage(orphImage, orph.x, orph.y, orph.width, orph.height);
+    if ()
   }
   for (const evilOrph of evilOrphs) {
     ctx.drawImage(evilOrphImage, evilOrph.x, evilOrph.y, evilOrph.width, evilOrph.height);
   }
+  ctx.drawImage
 }

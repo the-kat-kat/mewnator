@@ -6,9 +6,13 @@
     <title>mewnator</title>
   </head>
   <body>
-    <video id="video" autoplay playsinline class="w-full -scale-x-100"></video>
+    <video id="video" autoplay playsinline class="absolute  w-full -scale-x-100"></video>
     <canvas id="canvas" class="absolute top-0 left-0 w-full -scale-x-100"></canvas>
-
+    <div id="lose-screen" class="hidden absolute z-50 top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center">
+      <p> you lost >:3 </p>
+      <img id="your-face" class="w-[200px] h-[200px]"></img>
+      <button id="restart-btn"> play again! </button>
+    </div>
     <script type="module" src="src/main.js"></script>
   </body>
 </html>

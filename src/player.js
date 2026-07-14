@@ -17,6 +17,11 @@ export const player = {
 
 let wasChompingLastFrame = false;
 
+export function restartPlayer() {
+    player.isChomping = false;
+    wasChompingLastFrame = false;
+}
+
 export function updatePlayer(deltaTime, blendshapes, landmarks, canvasWidth, canvasHeight) {
     if (!blendshapes || !landmarks) return;
 
