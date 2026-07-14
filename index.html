@@ -7,10 +7,11 @@
   </head>
   <body>
     <video id="video" autoplay playsinline class="w-full -scale-x-100"></video>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" class="absolute top-0 left-0 w-full -scale-x-100"></canvas>
 
     <script type="module">
-      const { FaceLandmarker, FilesetResolver, DrawingUtils } = await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest");
+      const { FaceLandmarker, FilesetResolver, DrawingUtils } =
+        await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest");
 
       const video = document.getElementById("video");
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -20,34 +21,39 @@
       const ctx = canvas.getContext("2d");
 
       //https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker/web_js
-      const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm");
+      const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+      );
 
       const faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
         baseOptions: {
           modelAssetPath:
             "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task",
         },
-        runningMode: "LIVE_STREAM",
-        resultListener: (result) => {
-          console.log("got result")
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          if (result.faceLandmarks.length > 0) {
-            for (const point of result.faceLandmarks[0]) {
-              ctx.beginPath();
-              ctx.arc(point.x * canvas.width, point.y * canvas.height, 1.5, 0, 2 * Math.PI);
-              ctx.fillStyle = "lime";
-              ctx.fill();
-            }
-          }
-        },
+        runningMode: "VIDEO",
       });
 
       function predictWebcam() {
-        const startTimeMs = performance.now();
-        faceLandmarker.detectForVideo(video, startTimeMs);
+        const result = faceLandmarker.detectForVideo(video, performance.now());
+        console.log(result.faceLandmarks.length);
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (result.faceLandmarks.length > 0) {
+          for (const point of result.faceLandmarks[0]) {
+            ctx.beginPath();
+            ctx.arc(
+              point.x * canvas.width,
+              point.y * canvas.height,
+              1.5,
+              0,
+              2 * Math.PI,
+            );
+            ctx.fillStyle = "lime";
+            ctx.fill();
+          }
+        }
         requestAnimationFrame(predictWebcam);
       }
 
@@ -56,7 +62,6 @@
       } else {
         video.addEventListener("loadeddata", predictWebcam);
       }
-
     </script>
   </body>
 </html>
