@@ -31,6 +31,7 @@
             "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task",
         },
         runningMode: "VIDEO",
+        outputFaceBlendshapes: true,
       });
 
       function predictWebcam() {
@@ -52,6 +53,13 @@
             );
             ctx.fillStyle = "lime";
             ctx.fill();
+          }
+
+          const categories = result.faceBlendshapes[0].categories;
+          const jawOpen = categories.find(c => c.categoryName === "jawOpen");
+
+          if (jawOpen && jawOpen.score > 0.5) {
+            console.log("jaw  open");
           }
         }
         requestAnimationFrame(predictWebcam);
