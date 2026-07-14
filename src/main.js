@@ -1,3 +1,6 @@
+import {updateOrphs, drawOrphs} from "./orphs.js";
+import {player, updatePlayer, drawBox, centerGuideBox} from "./player.js";
+
 const { FaceLandmarker, FilesetResolver} =
   await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest");
 
@@ -22,48 +25,51 @@ const faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
   outputFaceBlendshapes: true,
 });
 
-function predictWebcam() {
-  const result = faceLandmarker.detectForVideo(video, performance.now());
-  console.log(result.faceLandmarks.length);
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  if (result.faceLandmarks.length > 0) {
-    for (const point of result.faceLandmarks[0]) {
-      ctx.beginPath();
-      ctx.arc(
-        point.x * canvas.width,
-        point.y * canvas.height,
-        1.5,
-        0,
-        2 * Math.PI,
-      );
-      ctx.fillStyle = "rgba(21, 255, 0, 0.2)";
-      ctx.fill();
-    }
-
-    const categories = result.faceBlendshapes[0].categories;
-    const jawOpen = categories.find((c) => c.categoryName === "jawOpen");
-
-    if (jawOpen && jawOpen.score > 0.5) {
-      console.log("jaw  open");
-    }
-  }
-  requestAnimationFrame(predictWebcam); //call predictWebcam right before next frame
-}
-
-if (video.readyState >= 2) {
-  predictWebcam();
-} else {
-  video.addEventListener("loadeddata", predictWebcam);
-}
-
 //nom nom game stuff
+let score = 0;
+let lastTime = 0;
+let blendshapes = null;
+let landmarks = null;
+let guideBoxCentered = false;
+
+function handleChomp(orph) {
+    score ++;
+    console.log("score + ", score);
+}
+
+function update(deltaTime) {
+    updatePlayer(deltaTime, blendshapes, landmarks, canvas.width, canvas.height);
+    updateOrphs(deltaTime, canvas.width, handleChomp);
+}
+
+function draw() {
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+    drawOrphs(ctx);
+    drawBox(ctx, canvas.width, canvas.height);
+}
+
 
 function gameLoop(timestamp) {
     const deltaTime = timestamp - lastTime;
     lastTime = timestamp;
+
+    const result = faceLandmarker.detectForVideo(video, performance.now());
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    if (!guideBoxCentered && canvas.width > 0) {
+        centerGuideBox(canvas.width, canvas.height);
+        guideBoxCentered = true;
+    }
+
+    if(result.faceLandmarks.length > 0){
+        landmarks = result.faceLandmarks[0];
+        blendshapes = result.faceBlendshapes[0].categories;
+    } else { 
+        landmarks = null;
+        blendshapes = null;
+    }
 
     update(deltaTime);
     draw();
@@ -71,5 +77,9 @@ function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop);
 }
 
-requestAnimationFrame(gameLoop);
+if (video.readyState >= 2) {
+    requestAnimationFrame(gameLoop);
+} else {
+    video.addEventListener("loadeddata", () => requestAnimationFrame(gameLoop));
+}
 

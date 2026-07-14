@@ -1,12 +1,17 @@
 export const guideBox = {
-    width: 200,
+    width: 50,
     height: 150,
 };
+
+export function centerGuideBox(canvasWidth, canvasHeight) {
+    guideBox.x = canvasWidth/2 - guideBox.width/2;
+    guideBox.y = canvasHeight/2 - guideBox.height/2;
+}
 
 export const player = {
     isChomping: false,
     mouthX: 0, //remember to set restrictions on the posiition later
-    mouuthY: 0,
+    mouthY: 0,
     inBounds: false,
 };
 
@@ -17,18 +22,18 @@ export function updatePlayer(deltaTime, blendshapes, landmarks, canvasWidth, can
     player.isChomping = jawOpen && jawOpen.score > 0.5;
 
     const mouth = landmarks[13] //approx mouth position
-    player.mouthX = mouth.x * canvas.width;
-    player.mouthY = mouth.y * canvas.height;
+    player.mouthX = mouth.x * canvasWidth;
+    player.mouthY = mouth.y * canvasHeight;
 
     player.inBounds = 
-        player.mouthX >= canvasWidth/2 - guideBox.width/2
-        player.mouthX <= canvasWidth/2 + guideBox.width/2
-        player.mouthY >= canvasHeight/2 - guideBox.height/2
-        player.mouthY <= canvasHeight/2 + guideBox.height/2
+        player.mouthX >= guideBox.x &&
+        player.mouthX <= guideBox.x + guideBox.width &&
+        player.mouthY >= guideBox.y &&
+        player.mouthY <= guideBox.y + guideBox.height;
 }
 
-export function drawBox(ctx) {
+export function drawBox(ctx, canvasWidth, canvasHeight) {
     ctx.strokeStyle = player.inBounds ? "lime" : "red";
     ctx.lineWidth = 3;
-    ctx.strokeRect(canvasWidth/2, canvasHeight/2, guideBox.width, guideBox.height);
+    ctx.strokeRect(canvasWidth/2 - guideBox.width/2, canvasHeight/2 - guideBox.height/2, guideBox.width, guideBox.height);
 }
