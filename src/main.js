@@ -11,6 +11,7 @@ video.srcObject = stream;
 
 const canvas = document.getElementById("canvas"); //canvas for the green dots, just for testing
 const ctx = canvas.getContext("2d");
+const scoreText = document.getElementById("score");
 
 const loseScreen = document.getElementById("lose-screen");
 const yourFace = document.getElementById("your-face");
@@ -44,6 +45,7 @@ let playing = true;
 function handleChomp(orph, goodness) {
     if (goodness) {
         score ++;
+        scoreText.innerText = score;
         munch.currentTime = 0;
         munch.play();
     }
@@ -70,6 +72,7 @@ restartBtn.addEventListener("click", () => {
 
 function restart() {
     score = 0;
+    scoreText.innerText = score;
     lastTime = 0;
     blendshapes = null;
     landmarks = null;

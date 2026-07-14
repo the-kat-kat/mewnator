@@ -4,7 +4,7 @@ import { snapshots } from "./snapshots.js";
 export let orphs = [];
 export let evilOrphs = [];
 
-let spawnInterval = 1000; //ms
+let spawnInterval = 800; //ms
 let timeSinceLastSpawn = 0;
 
 const orphImage = new Image();
@@ -39,7 +39,7 @@ export function updateOrphs(deltaTime, canvasWidth, onChomp) {
     spawnInterval -= Math.random() * 25;
   }
 
-  const speed = 0.2; // pixels per ms
+  const speed = 0.3; // pixels per ms
 
   for (const orph of orphs) {
     orph.x -= (speed + Math.random() * 0.2) * deltaTime;
@@ -75,6 +75,7 @@ export function updateOrphs(deltaTime, canvasWidth, onChomp) {
 function spawnOrph(canvasWidth) {
   const evil = Math.random() > 0.5;
   const width = 30;
+  const face = snapshots.length > 0 ? snapshots[Math.floor(snapshots.length * Math.random())] : null;
 
   if (!evil) {
     orphs.push({
@@ -82,6 +83,7 @@ function spawnOrph(canvasWidth) {
       y: guideBox.y + guideBox.height / 2,
       width: width,
       height: (width * orphImage.height) / orphImage.width,
+      face: face,
     });
   } else {
     evilOrphs.push({
@@ -89,6 +91,7 @@ function spawnOrph(canvasWidth) {
       y: guideBox.y + guideBox.height / 2,
       width: width,
       height: (width * orphImage.height) / orphImage.width,
+      face: face,
     });
   }
 }
@@ -97,12 +100,10 @@ export function drawOrphs(ctx) {
   const faceWidth = 30 * 0.8;
   for (const orph of orphs) {
     ctx.drawImage(orphImage, orph.x, orph.y, orph.width, orph.height);
-    if (snapshots.length > 0) {
-      console.log(snapshots);
-      const randomIndex = Math.floor(snapshots.length * Math.random());
+    if (orph.face) {
       ctx.drawImage(
-        snapshots[randomIndex],
-        orph.x,
+        orph.face,
+        orph.x - faceWidth / 4,
         orph.y - faceWidth / 2,
         faceWidth,
         faceWidth,
@@ -117,11 +118,10 @@ export function drawOrphs(ctx) {
       evilOrph.width,
       evilOrph.height,
     );
-    if (snapshots.length > 0) {
-      const randomIndex = Math.floor(snapshots.length * Math.random());
+    if (evilOrph.face) {
       ctx.drawImage(
-        snapshots[randomIndex],
-        evilOrph.x,
+        evilOrph.face,
+        evilOrph.x - faceWidth / 4,
         evilOrph.y - faceWidth / 2,
         faceWidth,
         faceWidth,

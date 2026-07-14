@@ -46,7 +46,7 @@ export function updatePlayer(deltaTime, blendshapes, landmarks, canvasWidth, can
 }
 
 export function drawBox(ctx, canvasWidth, canvasHeight) {
-    ctx.strokeStyle = player.inBounds ? "lime" : "red";
+    ctx.strokeStyle = player.inBounds ? "rgba(0, 255, 0, 0.3)" : "rgba(255, 0, 0, 0.3)";
     ctx.lineWidth = 3;
     ctx.strokeRect(canvasWidth/2 - guideBox.width/2, canvasHeight/2 - guideBox.height/2, guideBox.width, guideBox.height);
 }
