@@ -15,11 +15,19 @@ export const player = {
     inBounds: false,
 };
 
+let wasChompingLastFrame = false;
+
 export function updatePlayer(deltaTime, blendshapes, landmarks, canvasWidth, canvasHeight) {
     if (!blendshapes || !landmarks) return;
 
     const jawOpen = blendshapes.find(c => c.categoryName === "jawOpen");
-    player.isChomping = jawOpen && jawOpen.score > 0.5;
+    if (jawOpen && jawOpen.score > 0.5) {
+        player.isChomping = !wasChompingLastFrame;
+        wasChompingLastFrame = true;
+    } else {
+        player.isChomping = false;
+        wasChompingLastFrame = false;
+    }
 
     const mouth = landmarks[13] //approx mouth position
     player.mouthX = mouth.x * canvasWidth;

@@ -1,19 +1,23 @@
 import { guideBox, player } from "./player.js";
 
 export let orphs = [];
+export let evilOrphs = [];
 
 let spawnInterval = 1000; //ms
 let timeSinceLastSpawn = 0;
 
 const orphImage = new Image();
+const evilOrphImage = new Image();
 let imageLoaded = false;
 
 orphImage.src = "public/assets/dino.png";
+evilOrphImage.src = "public/assets/evil-dino.png"
 orphImage.onload = () => {
   imageLoaded = true;
 };
 
-function isColliding(boxA, boxB) { //boxA on the left
+function isColliding(boxA, boxB) {
+  //boxA on the left
   return boxA.x < boxB.x + boxB.width && boxA.x + boxA.width > boxB.x;
 }
 
@@ -33,10 +37,13 @@ export function updateOrphs(deltaTime, canvasWidth, onChomp) {
     orph.x -= (speed + Math.random() * 0.2) * deltaTime;
   }
 
+  for (const evilOrph of evilOrphs) {
+    evilOrph.x -= (speed + Math.random() * 0.2) * deltaTime;
+  }
 
   orphs = orphs.filter((orph) => {
     if (isColliding(guideBox, orph) && player.isChomping) {
-      onChomp(orph);
+      onChomp(orph, true);
       return false;
     }
 
@@ -44,20 +51,45 @@ export function updateOrphs(deltaTime, canvasWidth, onChomp) {
 
     return true;
   });
+
+    evilOrphs = evilOrphs.filter((evilOrph) => {
+    if (isColliding(guideBox, evilOrph) && player.isChomping) {
+      onChomp(evilOrph, false);
+      return false;
+    }
+
+    if (evilOrph.x + evilOrph.width < 0) return false;
+
+    return true;
+  });
 }
 
 function spawnOrph(canvasWidth) {
+  const evil = Math.random() > 0.5;
   const width = 30;
-  orphs.push({
-    x: canvasWidth + width,
-    y: guideBox.y + guideBox.height / 2,
-    width: width,
-    height: width * orphImage.height / orphImage.width,
-  });
+
+  if (!evil) {
+    orphs.push({
+      x: canvasWidth + width,
+      y: guideBox.y + guideBox.height / 2,
+      width: width,
+      height: (width * orphImage.height) / orphImage.width,
+    });
+  } else {
+    evilOrphs.push({
+      x: canvasWidth + width,
+      y: guideBox.y + guideBox.height / 2,
+      width: width,
+      height: (width * orphImage.height) / orphImage.width,
+    });
+  }
 }
 
 export function drawOrphs(ctx) {
   for (const orph of orphs) {
     ctx.drawImage(orphImage, orph.x, orph.y, orph.width, orph.height);
+  }
+  for (const evilOrph of evilOrphs) {
+    ctx.drawImage(evilOrphImage, evilOrph.x, evilOrph.y, evilOrph.width, evilOrph.height);
   }
 }

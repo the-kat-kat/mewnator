@@ -11,7 +11,8 @@ video.srcObject = stream;
 const canvas = document.getElementById("canvas"); //canvas for the green dots, just for testing
 const ctx = canvas.getContext("2d");
 
-const sfx = document.getElementById("sfx");
+const munch = new Audio("public/assets/munch.mp3");
+const miau = new Audio("public/assets/miau.mp3");
 
 //https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker/web_js
 const vision = await FilesetResolver.forVisionTasks(
@@ -34,10 +35,19 @@ let blendshapes = null;
 let landmarks = null;
 let guideBoxCentered = false;
 
-function handleChomp(orph) {
-    score ++;
+function handleChomp(orph, goodness) {
+    if (goodness) {
+        score ++;
+        munch.currentTime = 0;
+        munch.play();
+    }
+    else {
+        console.log("baddddd");
+        score --;
+        miau.currentTime = 0;
+        miau.play();
+    }
     console.log("score + ", score);
-    sfx.play();
 }
 
 function update(deltaTime) {
