@@ -1,5 +1,5 @@
 import { guideBox, player } from "./player.js";
-import { snapShots } from "./snapshots.js";
+import { snapshots } from "./snapshots.js";
 
 export let orphs = [];
 export let evilOrphs = [];
@@ -12,16 +12,16 @@ const evilOrphImage = new Image();
 let imageLoaded = false;
 
 orphImage.src = "public/assets/dino.png";
-evilOrphImage.src = "public/assets/evil-dino.png"
+evilOrphImage.src = "public/assets/evil-dino.png";
 orphImage.onload = () => {
   imageLoaded = true;
 };
 
 export function restartOrphs() {
-    orphs = [];
-    evilOrphs = [];
-    spawnInterval = 1000;
-    timeSinceLastSpawn = 0;
+  orphs = [];
+  evilOrphs = [];
+  spawnInterval = 1000;
+  timeSinceLastSpawn = 0;
 }
 
 function isColliding(boxA, boxB) {
@@ -60,7 +60,7 @@ export function updateOrphs(deltaTime, canvasWidth, onChomp) {
     return true;
   });
 
-    evilOrphs = evilOrphs.filter((evilOrph) => {
+  evilOrphs = evilOrphs.filter((evilOrph) => {
     if (isColliding(guideBox, evilOrph) && player.isChomping) {
       onChomp(evilOrph, false);
       return false;
@@ -94,12 +94,38 @@ function spawnOrph(canvasWidth) {
 }
 
 export function drawOrphs(ctx) {
+  const faceWidth = 30 * 0.8;
   for (const orph of orphs) {
     ctx.drawImage(orphImage, orph.x, orph.y, orph.width, orph.height);
-    if ()
+    if (snapshots.length > 0) {
+      console.log(snapshots);
+      const randomIndex = Math.floor(snapshots.length * Math.random());
+      ctx.drawImage(
+        snapshots[randomIndex],
+        orph.x,
+        orph.y - faceWidth / 2,
+        faceWidth,
+        faceWidth,
+      );
+    }
   }
   for (const evilOrph of evilOrphs) {
-    ctx.drawImage(evilOrphImage, evilOrph.x, evilOrph.y, evilOrph.width, evilOrph.height);
+    ctx.drawImage(
+      evilOrphImage,
+      evilOrph.x,
+      evilOrph.y,
+      evilOrph.width,
+      evilOrph.height,
+    );
+    if (snapshots.length > 0) {
+      const randomIndex = Math.floor(snapshots.length * Math.random());
+      ctx.drawImage(
+        snapshots[randomIndex],
+        evilOrph.x,
+        evilOrph.y - faceWidth / 2,
+        faceWidth,
+        faceWidth,
+      );
+    }
   }
-  ctx.drawImage
 }

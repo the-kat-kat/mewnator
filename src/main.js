@@ -1,6 +1,6 @@
 import { updateOrphs, drawOrphs, restartOrphs} from "./orphs.js";
 import { player, updatePlayer, drawBox, centerGuideBox, restartPlayer} from "./player.js";
-import { addSnapshot, restartSnapshots } from "./snapshots.js";
+import { addSnapshot } from "./snapshots.js";
 
 const { FaceLandmarker, FilesetResolver} =
   await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest");
@@ -57,6 +57,7 @@ function handleChomp(orph, goodness) {
 }
 
 function handleLoss() {
+    console.log("you losttt");
     const snapshot = addSnapshot(video);
     playing = false;
     yourFace.src = snapshot;
@@ -75,7 +76,6 @@ function restart() {
     guideBoxCentered = false;
     restartOrphs();
     restartPlayer();
-    restartSnapshots();
     loseScreen.classList.add("hidden");
     playing = true;
 }

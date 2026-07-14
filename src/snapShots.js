@@ -2,10 +2,6 @@ const size = 200;
 
 export let snapshots = [];
 
-export function restartSnapshots() {
-    snapshots = [];
-}
-
 function captureSnapshot(video) {
     const snapCanvas = document.createElement("canvas");
     snapCanvas.width = size;
@@ -20,7 +16,10 @@ function captureSnapshot(video) {
 
 export function addSnapshot(video) {
     const dataUrl = captureSnapshot(video);
-    snapshots.push(dataUrl);
+    const img = new Image();
+    img.src = dataUrl; 
+    snapshots.push(img);
+    console.log("added snapshot weee", snapshots);
 
     return dataUrl;
 }

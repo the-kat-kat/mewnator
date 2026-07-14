@@ -1,6 +1,6 @@
 export const guideBox = {
     width: 70,
-    height: 150,
+    height: 70,
 };
 
 export function centerGuideBox(canvasWidth, canvasHeight) {
