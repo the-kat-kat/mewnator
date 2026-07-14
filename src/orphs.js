@@ -33,6 +33,7 @@ export function updateOrphs(deltaTime, canvasWidth, onChomp) {
     orph.x -= (speed + Math.random() * 0.2) * deltaTime;
   }
 
+
   orphs = orphs.filter((orph) => {
     if (isColliding(guideBox, orph) && player.isChomping) {
       onChomp(orph);

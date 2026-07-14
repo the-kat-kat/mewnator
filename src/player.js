@@ -1,5 +1,5 @@
 export const guideBox = {
-    width: 50,
+    width: 70,
     height: 150,
 };
 
@@ -10,7 +10,7 @@ export function centerGuideBox(canvasWidth, canvasHeight) {
 
 export const player = {
     isChomping: false,
-    mouthX: 0, //remember to set restrictions on the posiition later
+    mouthX: 0,
     mouthY: 0,
     inBounds: false,
 };

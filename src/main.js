@@ -11,6 +11,8 @@ video.srcObject = stream;
 const canvas = document.getElementById("canvas"); //canvas for the green dots, just for testing
 const ctx = canvas.getContext("2d");
 
+const sfx = document.getElementById("sfx");
+
 //https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker/web_js
 const vision = await FilesetResolver.forVisionTasks(
   "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
@@ -35,6 +37,7 @@ let guideBoxCentered = false;
 function handleChomp(orph) {
     score ++;
     console.log("score + ", score);
+    sfx.play();
 }
 
 function update(deltaTime) {
